@@ -1,0 +1,13 @@
+### Get all patients
+GET http://localhost:8080/patients
+Content-Type: application/json
+
+### Add new patient
+POST http://localhost:8080/patients
+Content-Type: application/json
+
+{
+  "name": "Heba",
+  "address": "Cairo",
+  "phone": "0100000000"
+}
