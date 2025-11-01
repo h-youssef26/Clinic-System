@@ -1,0 +1,43 @@
+### Get all doctors
+GET http://localhost:8080/api/doctors
+Accept: application/json
+
+### Create a new doctor
+POST http://localhost:8080/api/doctors
+Content-Type: application/json
+
+{
+  "name": "Dr. Ahmed",
+  "email": "ahmed@example.com",
+  "phoneNumber": "0123456789",
+  "specialization": "Cardiology",
+  "gender": "Male",
+  "experienceYears": 10,
+  "address": "Cairo, Egypt",
+  "dateOfBirth": "1980-05-15",
+  "password": "123456"
+}
+
+### Get doctor by ID
+GET http://localhost:8080/api/doctors/1
+Accept: application/json
+
+### Update doctor
+PUT http://localhost:8080/api/doctors/1
+Content-Type: application/json
+
+{
+  "name": "Dr. Ahmed Updated",
+  "email": "ahmed.updated@example.com",
+  "phoneNumber": "0123456789",
+  "specialization": "Neurology",
+  "gender": "Male",
+  "experienceYears": 12,
+  "address": "Cairo, Egypt",
+  "dateOfBirth": "1980-05-15",
+  "password": "654321"
+}
+
+### Delete doctor
+DELETE http://localhost:8080/api/doctors/1
+

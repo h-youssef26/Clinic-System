@@ -1,0 +1,34 @@
+### Get all appointments
+GET http://localhost:8080/api/appointments
+Accept: application/json
+
+### Create a new appointment
+POST http://localhost:8080/api/appointments
+Content-Type: application/json
+
+{
+  "doctor": {"id": 2},
+  "patient": {"id": 2},
+  "date": "2025-11-10",
+  "time": "10:30:00",
+  "notes": "Regular checkup"
+}
+
+### Get appointment by ID
+GET http://localhost:8080/api/appointments/2
+Accept: application/json
+
+### Update appointment
+PUT http://localhost:8080/api/appointments/2
+Content-Type: application/json
+
+{
+  "doctor": {"id": 2},
+  "patient": {"id": 2},
+  "date": "2025-11-11",
+  "time": "11:00:00",
+  "notes": "Updated appointment notes"
+}
+
+### Delete appointment
+DELETE http://localhost:8080/api/appointments/7
