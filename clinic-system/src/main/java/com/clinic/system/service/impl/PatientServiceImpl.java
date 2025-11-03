@@ -1,29 +1,21 @@
 package com.clinic.system.service.impl;
 
+import com.clinic.system.exception.PatientNotFoundException;
 import com.clinic.system.model.Patient;
 import com.clinic.system.repository.PatientRepository;
 import com.clinic.system.service.PatientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    @Autowired
-    private PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
 
-    @Override
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
-    }
-
-    @Override
-    public Patient getPatientById(Long id) {
-        Optional<Patient> patient = patientRepository.findById(id);
-        return patient.orElse(null);
+    public PatientServiceImpl(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
     }
 
     @Override
@@ -32,24 +24,35 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient updatePatient(Long id, Patient patientDetails) {
-        Patient existingPatient = patientRepository.findById(id).orElse(null);
-        if (existingPatient != null) {
-            existingPatient.setName(patientDetails.getName());
-            existingPatient.setPhoneNumber(patientDetails.getPhoneNumber());
-            existingPatient.setGender(patientDetails.getGender());
-            existingPatient.setDateOfBirth(patientDetails.getDateOfBirth());
-            existingPatient.setAddress(patientDetails.getAddress());
-            existingPatient.setEmail(patientDetails.getEmail());
-            existingPatient.setMedicalHistory(patientDetails.getMedicalHistory());
-            return patientRepository.save(existingPatient);
-        } else {
-            return null;
-        }
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
     }
 
     @Override
+    public Patient getPatientById(Long id) {
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException(id));
+    }
+
+    @Transactional
+    @Override
+    public Patient updatePatient(Long id, Patient patient) {
+        Patient existingPatient = patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException(id));
+
+        existingPatient.setName(patient.getName());
+        existingPatient.setAddress(patient.getAddress());
+        existingPatient.setDateOfBirth(patient.getDateOfBirth());
+        existingPatient.setGender(patient.getGender());
+
+        return patientRepository.save(existingPatient);
+    }
+
+    @Transactional
+    @Override
     public void deletePatient(Long id) {
-        patientRepository.deleteById(id);
+        Patient existingPatient = patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException(id));
+        patientRepository.delete(existingPatient);
     }
 }

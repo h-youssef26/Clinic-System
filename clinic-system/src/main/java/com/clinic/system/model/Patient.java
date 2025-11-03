@@ -2,43 +2,45 @@ package com.clinic.system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
-@Table(name = "patient")
-public class Patient {
+@DiscriminatorValue("PATIENT")
+public class Patient extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
     private String phoneNumber;
     private String gender;
     private LocalDate dateOfBirth;
     private String address;
-    private String email;
     private String medicalHistory;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<Appointment> appointments = new ArrayList<>();
 
     // Constructors
     public Patient() {}
 
-    public Patient(String name, String phoneNumber, String gender, LocalDate dateOfBirth, String address, String email, String medicalHistory) {
-        this.name = name;
+    public Patient(String username, String password, String role, LocalDateTime createdAt, String name,
+                   String phoneNumber, String gender, LocalDate dateOfBirth, String address, String medicalHistory) {
+        super(username, password, role, createdAt, name);
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
-        this.email = email;
         this.medicalHistory = medicalHistory;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
@@ -50,9 +52,6 @@ public class Patient {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
 
     public String getMedicalHistory() { return medicalHistory; }
     public void setMedicalHistory(String medicalHistory) { this.medicalHistory = medicalHistory; }

@@ -19,11 +19,11 @@ Content-Type: application/json
 }
 
 ### Get doctor by ID
-GET http://localhost:8080/api/doctors/1
+GET http://localhost:8080/api/doctors/3
 Accept: application/json
 
 ### Update doctor
-PUT http://localhost:8080/api/doctors/1
+PUT http://localhost:8080/api/doctors/3
 Content-Type: application/json
 
 {
@@ -39,5 +39,5 @@ Content-Type: application/json
 }
 
 ### Delete doctor
-DELETE http://localhost:8080/api/doctors/1
+DELETE http://localhost:8080/api/doctors/3
 

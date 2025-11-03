@@ -13,8 +13,11 @@ import java.util.Optional;
 @RequestMapping("/api/doctors")
 public class DoctorController {
 
-    @Autowired
-    private DoctorService doctorService;
+    private final DoctorService doctorService;
+
+    public DoctorController(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
 
     // Create doctor
     @PostMapping
@@ -31,9 +34,8 @@ public class DoctorController {
     // Get doctor by id
     @GetMapping("/{id}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
-        Optional<Doctor> doctor = doctorService.getDoctorById(id);
-        return doctor.map(ResponseEntity::ok)
-                     .orElseGet(() -> ResponseEntity.notFound().build());
+        Doctor doctor = doctorService.getDoctorById(id);
+        return ResponseEntity.ok(doctor);
     }
 
     // Update doctor

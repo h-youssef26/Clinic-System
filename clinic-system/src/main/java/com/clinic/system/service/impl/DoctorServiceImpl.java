@@ -1,19 +1,22 @@
 package com.clinic.system.service.impl;
 
+import com.clinic.system.exception.DoctorNotFoundException;
 import com.clinic.system.model.Doctor;
 import com.clinic.system.repository.DoctorRepository;
 import com.clinic.system.service.DoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
-    @Autowired
-    private DoctorRepository doctorRepository;
+    private final DoctorRepository doctorRepository;
+
+    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
@@ -22,21 +25,22 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return (List<Doctor>) doctorRepository.findAll();
+        return doctorRepository.findAll();
     }
 
     @Override
-    public Optional<Doctor> getDoctorById(Long id) {
-        return doctorRepository.findById(id);
+    public Doctor getDoctorById(Long id) {
+        return doctorRepository.findById(id)
+                .orElseThrow(() -> new DoctorNotFoundException(id));
     }
 
+    @Transactional
     @Override
     public Doctor updateDoctor(Long id, Doctor doctor) {
         Doctor existingDoctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found with id: " + id));
+                .orElseThrow(() -> new DoctorNotFoundException(id));
 
         existingDoctor.setName(doctor.getName());
-        existingDoctor.setEmail(doctor.getEmail());
         existingDoctor.setPassword(doctor.getPassword());
         existingDoctor.setPhoneNumber(doctor.getPhoneNumber());
         existingDoctor.setSpecialization(doctor.getSpecialization());
@@ -48,8 +52,11 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.save(existingDoctor);
     }
 
+    @Transactional
     @Override
     public void deleteDoctor(Long id) {
-        doctorRepository.deleteById(id);
+        Doctor existingDoctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new DoctorNotFoundException(id));
+        doctorRepository.delete(existingDoctor);
     }
 }

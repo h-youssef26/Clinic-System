@@ -2,17 +2,14 @@ package com.clinic.system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
-@Table(name = "doctor")
-public class Doctor {
+@DiscriminatorValue("DOCTOR")
+public class Doctor extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-    private String email;
     private String password;
     private String phoneNumber;
     private String specialization;
@@ -21,15 +18,16 @@ public class Doctor {
     private String address;
     private LocalDate dateOfBirth;
 
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments = new ArrayList<>();
+
     // Constructors
     public Doctor() {}
 
-    public Doctor(String name, String email, String password, String phoneNumber,
-                  String specialization, String gender, int experienceYears,
-                  String address, LocalDate dateOfBirth) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    public Doctor(String username, String password, String role, LocalDateTime createdAt, String name,
+                  String phoneNumber, String specialization, String gender,
+                  int experienceYears, String address, LocalDate dateOfBirth) {
+        super(username, password, role, createdAt, name);
         this.phoneNumber = phoneNumber;
         this.specialization = specialization;
         this.gender = gender;
@@ -38,16 +36,15 @@ public class Doctor {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
