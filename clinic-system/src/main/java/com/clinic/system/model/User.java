@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
 
@@ -17,15 +17,25 @@ public abstract class User {
     private String role;
     private String name;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
     // Constructors
     public User() {}
 
-    public User(String username, String password, String role, LocalDateTime createdAt, String name) {
+    public User(String username, String password, String role, String name) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.createdAt = createdAt;
         this.name = name;
     }
 
@@ -47,4 +57,9 @@ public abstract class User {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt;}
+
+
 }

@@ -6,20 +6,23 @@ import com.clinic.system.repository.DoctorRepository;
 import com.clinic.system.service.DoctorService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder) {
         this.doctorRepository = doctorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
+        doctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
         return doctorRepository.save(doctor);
     }
 
@@ -48,6 +51,10 @@ public class DoctorServiceImpl implements DoctorService {
         existingDoctor.setExperienceYears(doctor.getExperienceYears());
         existingDoctor.setAddress(doctor.getAddress());
         existingDoctor.setDateOfBirth(doctor.getDateOfBirth());
+
+        if (doctor.getPassword() != null && !doctor.getPassword().isEmpty()) {
+            existingDoctor.setPassword(passwordEncoder.encode(doctor.getPassword()));
+        }
 
         return doctorRepository.save(existingDoctor);
     }

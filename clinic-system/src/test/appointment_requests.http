@@ -2,18 +2,6 @@
 GET http://localhost:8080/api/appointments
 Accept: application/json
 
-### Create a new appointment
-POST http://localhost:8080/api/appointments
-Content-Type: application/json
-
-{
-  "doctor": {"id": 2},
-  "patient": {"id": 2},
-  "date": "2025-11-10",
-  "time": "10:30:00",
-  "notes": "Regular checkup"
-}
-
 ### Get appointment by ID
 GET http://localhost:8080/api/appointments/2
 Accept: application/json
@@ -31,4 +19,8 @@ Content-Type: application/json
 }
 
 ### Delete appointment
-DELETE http://localhost:8080/api/appointments/7
+DELETE http://localhost:8080/api/appointments/2
+
+### 🩺 Book Appointment (Patient)
+POST http://localhost:8080/api/appointments/book?patientId=2&doctorId=9&date=2025-11-10&time=10:30:00&notes=Regular+checkup
+Accept: application/json

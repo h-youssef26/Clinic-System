@@ -3,6 +3,7 @@ package com.clinic.system.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointment")
@@ -21,11 +22,25 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    // Appointment details
     private LocalDate date;
     private LocalTime time;
     private String notes;
-    private String status; // e.g., "Scheduled", "Completed", "Cancelled"
+    private String status;
+    private String prescription;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     // Constructors
     public Appointment() {}
@@ -37,7 +52,10 @@ public class Appointment {
         this.time = time;
         this.notes = notes;
         this.status = status;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
+
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -60,4 +78,15 @@ public class Appointment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getPrescription() {return prescription;}
+    public void setPrescription(String prescription) {this.prescription = prescription;}
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt;}
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt;}
 }
+
+

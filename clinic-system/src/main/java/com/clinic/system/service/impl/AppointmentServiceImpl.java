@@ -13,6 +13,8 @@ import com.clinic.system.service.AppointmentService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -86,4 +88,99 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new AppointmentNotFoundException(id));
         appointmentRepository.delete(existing);
     }
+
+    @Override
+    public Appointment bookAppointment(Long patientId, Long doctorId, LocalDate date, LocalTime time, String notes) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException(patientId));
+
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId));
+
+        boolean doctorBusy = appointmentRepository
+                .existsByDoctorIdAndDateAndTimeAndStatusNot(doctorId, date, time, "Cancelled");
+
+        if (doctorBusy) {
+            throw new RuntimeException("Doctor is already booked at this time.");
+        }
+
+        Appointment appointment = new Appointment(doctor, patient, date, time, notes, "Scheduled");
+        return appointmentRepository.save(appointment);
+    }
+
+    @Override
+    @Transactional
+    public Appointment cancelAppointment(Long appointmentId, Long patientId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(appointmentId));
+
+        if (!appointment.getPatient().getId().equals(patientId)) {
+            throw new RuntimeException("You are not allowed to cancel this appointment.");
+        }
+
+        appointment.setStatus("Cancelled");
+
+        return appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public List<Appointment> getDoctorSchedule(Long doctorId) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId));
+        return appointmentRepository.findByDoctorId(doctor.getId());
+    }
+
+    @Override
+    public List<Appointment> getDoctorScheduleByDate(Long doctorId, LocalDate date) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId));
+        return appointmentRepository.findByDoctorIdAndDate(doctor.getId(), date);
+    }
+
+    @Override
+    @Transactional
+    public Appointment addPrescription(Long appointmentId, Long doctorId, String prescriptionText) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(appointmentId));
+
+        if (!appointment.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("You are not authorized to add a prescription for this appointment.");
+        }
+
+        appointment.setPrescription(prescriptionText);
+        return appointmentRepository.save(appointment);
+    }
+
+    @Override
+    public List<Appointment> getPatientAppointments(Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException(patientId));
+        return appointmentRepository.findByPatientId(patient.getId());
+    }
+
+    @Override
+    @Transactional
+    public Appointment rescheduleAppointment(Long appointmentId, Long patientId, LocalDate newDate, LocalTime newTime) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(appointmentId));
+
+        if (!appointment.getPatient().getId().equals(patientId)) {
+            throw new RuntimeException("You can only reschedule your own appointments.");
+        }
+
+        boolean doctorBusy = appointmentRepository
+                .existsByDoctorIdAndDateAndTimeAndStatusNot(
+                        appointment.getDoctor().getId(), newDate, newTime, "Cancelled");
+
+        if (doctorBusy) {
+            throw new RuntimeException("Doctor is already booked at the new time.");
+        }
+
+        appointment.setDate(newDate);
+        appointment.setTime(newTime);
+        appointment.setStatus("Rescheduled");
+
+        return appointmentRepository.save(appointment);
+    }
+
 }
