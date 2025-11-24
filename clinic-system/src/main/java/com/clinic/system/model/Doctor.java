@@ -22,13 +22,34 @@ public class Doctor extends User {
     @JsonIgnore
     private List<Appointment> appointments = new ArrayList<>();
 
-    // Constructors
-    public Doctor() {}
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Prescription> prescriptions = new ArrayList<>();
 
-    public Doctor(String username, String password, String role, LocalDateTime createdAt, String name,
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MedicalRecordEntry> medicalRecordEntries = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "doctor_clinic_service",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "clinic_service_id")
+    )
+    private List<ClinicService> clinicServices = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    // Constructors
+    public Doctor() {
+    }
+
+    public Doctor(String username, String password, String user_role, LocalDateTime createdAt, String name,
                   String phoneNumber, String specialization, String gender,
                   int experienceYears, String address, LocalDate dateOfBirth) {
-        super(username, password, role, name);
+        super(username, password, createdAt, name);
         this.phoneNumber = phoneNumber;
         this.specialization = specialization;
         this.gender = gender;
@@ -45,21 +66,83 @@ public class Doctor extends User {
         this.appointments = appointments;
     }
 
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-    public String getSpecialization() { return specialization; }
-    public void setSpecialization(String specialization) { this.specialization = specialization; }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
+    public String getSpecialization() {
+        return specialization;
+    }
 
-    public int getExperienceYears() { return experienceYears; }
-    public void setExperienceYears(int experienceYears) { this.experienceYears = experienceYears; }
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public String getGender() {
+        return gender;
+    }
 
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getExperienceYears() {
+        return experienceYears;
+    }
+
+    public void setExperienceYears(int experienceYears) {
+        this.experienceYears = experienceYears;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<ClinicService> getClinicServices() {
+        return clinicServices;
+    }
+
+    public void setClinicServices(List<ClinicService> clinicServices) {
+        this.clinicServices = clinicServices;
+    }
+
+    public List<Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<Prescription> prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    public List<MedicalRecordEntry> getMedicalRecordEntries() {
+        return medicalRecordEntries;
+    }
+
+    public void setMedicalRecordEntries(List<MedicalRecordEntry> medicalRecordEntries) {
+        this.medicalRecordEntries = medicalRecordEntries;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 }

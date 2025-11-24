@@ -2,10 +2,12 @@ package com.clinic.system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "dtype")
 public abstract class User {
 
     @Id
@@ -14,7 +16,6 @@ public abstract class User {
 
     private String username;
     private String password;
-    private String role;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -29,37 +30,91 @@ public abstract class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    // Constructors
-    public User() {}
 
-    public User(String username, String password, String role, String name) {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
+    private Administrator createdBy;
+
+
+    public User() {
+    }
+
+    public User(String username, String password, LocalDateTime createdAt, String name) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.createdAt = createdAt;
         this.name = name;
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getUsername() {
+        return username;
+    }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt;}
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Administrator getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Administrator createdBy) {
+        this.createdBy = createdBy;
+    }
 }

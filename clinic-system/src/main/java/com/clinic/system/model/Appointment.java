@@ -13,7 +13,10 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relationships
+    @ManyToOne
+    @JoinColumn(name = "receptionist_id") // the foreign key column
+    private Receptionist receptionist;
+
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
@@ -21,6 +24,10 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    @ManyToOne
+    @JoinColumn(name = "nurse_id") // foreign key column
+    private Nurse nurse;
 
     private LocalDate date;
     private LocalTime time;
@@ -43,7 +50,8 @@ public class Appointment {
     }
 
     // Constructors
-    public Appointment() {}
+    public Appointment() {
+    }
 
     public Appointment(Doctor doctor, Patient patient, LocalDate date, LocalTime time, String notes, String status) {
         this.doctor = doctor;
@@ -58,35 +66,101 @@ public class Appointment {
 
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Doctor getDoctor() { return doctor; }
-    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Patient getPatient() { return patient; }
-    public void setPatient(Patient patient) { this.patient = patient; }
+    public Doctor getDoctor() {
+        return doctor;
+    }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 
-    public LocalTime getTime() { return time; }
-    public void setTime(LocalTime time) { this.time = time; }
+    public Patient getPatient() {
+        return patient;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public LocalDate getDate() {
+        return date;
+    }
 
-    public String getPrescription() {return prescription;}
-    public void setPrescription(String prescription) {this.prescription = prescription;}
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt;}
+    public LocalTime getTime() {
+        return time;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt;}
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPrescription() {
+        return prescription;
+    }
+
+    public void setPrescription(String prescription) {
+        this.prescription = prescription;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Receptionist getReceptionist() {
+        return receptionist;
+    }
+
+    public void setReceptionist(Receptionist receptionist) {
+        this.receptionist = receptionist;
+    }
+
+    public Nurse getNurse() {
+        return nurse;
+    }
+    public void setNurse(Nurse nurse) {
+        this.nurse = nurse;
+    }
+
 }
 
 
