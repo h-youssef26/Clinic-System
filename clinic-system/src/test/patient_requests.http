@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "name": "Omar Magdy",
-  "email": "omar8@example.com",
+  "email": "omar4@example.com",
   "phoneNumber": "0123456789",
   "gender": "Male",
   "dateOfBirth": "1990-05-15",
@@ -17,11 +17,11 @@ Content-Type: application/json
 }
 
 ### Get patient by ID
-GET http://localhost:8080/api/patients/1
+GET http://localhost:8080/api/patients/2
 Accept: application/json
 
 ### Update patient
-PUT http://localhost:8080/api/patients/1
+PUT http://localhost:8080/api/patients/2
 Content-Type: application/json
 
 {
@@ -35,6 +35,6 @@ Content-Type: application/json
 }
 
 ### Delete patient
-DELETE http://localhost:8080/api/patients/1
+DELETE http://localhost:8080/api/patients/18
 
 
