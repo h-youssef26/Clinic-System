@@ -1,0 +1,38 @@
+### Get all nurses
+GET http://localhost:8080/api/nurses
+Accept: application/json
+
+### Create nurse
+POST http://localhost:8080/api/nurses
+Content-Type: application/json
+
+{
+  "name": "Nurse Sara",
+  "email": "sara.nurse@example.com",
+  "phoneNumber": "01000000000",
+  "gender": "Female",
+  "address": "Cairo",
+  "dateOfBirth": "1995-01-01",
+  "password": "123456"
+}
+
+### Get nurse by ID
+GET http://localhost:8080/api/nurses/1
+Accept: application/json
+
+### Update nurse
+PUT http://localhost:8080/api/nurses/1
+Content-Type: application/json
+
+{
+  "name": "Nurse Sara Updated",
+  "email": "sara.updated@example.com",
+  "phoneNumber": "01000000000",
+  "gender": "Female",
+  "address": "Giza",
+  "dateOfBirth": "1995-01-01",
+  "password": "654321"
+}
+
+### Delete nurse
+DELETE http://localhost:8080/api/nurses/1

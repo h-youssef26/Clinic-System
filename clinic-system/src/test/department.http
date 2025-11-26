@@ -1,0 +1,28 @@
+### Get all departments
+GET http://localhost:8080/api/departments
+Accept: application/json
+
+### Create department
+POST http://localhost:8080/api/departments
+Content-Type: application/json
+
+{
+  "name": "Cardiology",
+  "description": "Heart & vascular department"
+}
+
+### Get department by ID
+GET http://localhost:8080/api/departments/1
+Accept: application/json
+
+### Update department
+PUT http://localhost:8080/api/departments/1
+Content-Type: application/json
+
+{
+  "name": "Updated Cardiology",
+  "description": "Updated description"
+}
+
+### Delete department
+DELETE http://localhost:8080/api/departments/1

@@ -1,0 +1,34 @@
+### Get all insurances
+GET http://localhost:8080/api/insurances
+Accept: application/json
+
+### Create insurance
+POST http://localhost:8080/api/insurances
+Content-Type: application/json
+
+{
+  "providerName": "AXA",
+  "policyNumber": "AXA-123456",
+  "coverageDetails": "Full coverage"
+}
+
+### Get insurance by ID
+GET http://localhost:8080/api/insurances/1
+Accept: application/json
+
+### Update insurance
+PUT http://localhost:8080/api/insurances/1
+Content-Type: application/json
+
+{
+  "providerName": "AXA Updated",
+  "policyNumber": "AXA-654321",
+  "coverageDetails": "Updated coverage"
+}
+
+### Delete insurance
+DELETE http://localhost:8080/api/insurances/1
+
+### Assign insurance to patient
+POST http://localhost:8080/api/insurances/1/assign-to-patient/1
+Accept: application/json

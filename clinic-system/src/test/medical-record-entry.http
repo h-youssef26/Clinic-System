@@ -1,0 +1,36 @@
+### Add entry to record
+POST http://localhost:8080/api/medical-record-entries
+Content-Type: application/json
+
+{
+  "medicalRecord": { "id": 1 },
+  "doctor": { "id": 1 },
+  "nurse": { "id": 1 },
+  "notes": "Patient complaining of headache",
+  "diagnosis": "Migraine",
+  "treatment": "Painkillers"
+}
+
+### List all entries
+GET http://localhost:8080/api/medical-record-entries
+Accept: application/json
+
+### Get entry by ID
+GET http://localhost:8080/api/medical-record-entries/1
+Accept: application/json
+
+### Update entry
+PUT http://localhost:8080/api/medical-record-entries/1
+Content-Type: application/json
+
+{
+  "medicalRecord": { "id": 1 },
+  "doctor": { "id": 1 },
+  "nurse": { "id": 1 },
+  "notes": "Updated notes",
+  "diagnosis": "Updated diagnosis",
+  "treatment": "Updated treatment"
+}
+
+### Delete entry
+DELETE http://localhost:8080/api/medical-record-entries/1
