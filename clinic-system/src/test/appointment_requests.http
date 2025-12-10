@@ -3,7 +3,7 @@ GET http://localhost:8080/api/appointments
 Accept: application/json
 
 ### Get appointment by ID
-GET http://localhost:8080/api/appointments/2
+GET http://localhost:8080/api/appointments/1
 Accept: application/json
 
 ### Update appointment

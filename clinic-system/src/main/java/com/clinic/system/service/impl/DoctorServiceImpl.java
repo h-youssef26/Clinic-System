@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -61,9 +62,12 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Transactional
     @Override
-    public void deleteDoctor(Long id) {
-        Doctor existingDoctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException(id));
-        doctorRepository.delete(existingDoctor);
+    public boolean deleteDoctor(Long id) {
+        Optional<Doctor> doctorOpt = doctorRepository.findById(id);
+        if (doctorOpt.isPresent()) {
+            doctorRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,13 +1,15 @@
 ### Get all doctors
 GET http://localhost:8080/api/doctors
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoQHlvdXNzZWYiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjo5LCJuYW1lIjoiWW91c3NlZiIsImlhdCI6MTc2NTMyNTU3NiwiZXhwIjoxNzY1NDExOTc2fQ.XNZKoOCL_IVtHhBsIrKGfR33pDRuM7B2bszdz0V2zXk
 Accept: application/json
 
 ### Create a new doctor
 POST http://localhost:8080/api/doctors
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoQHlvdXNzZWYiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjo5LCJuYW1lIjoiWW91c3NlZiIsImlhdCI6MTc2NTMyNTU3NiwiZXhwIjoxNzY1NDExOTc2fQ.XNZKoOCL_IVtHhBsIrKGfR33pDRuM7B2bszdz0V2zXk
 Content-Type: application/json
 
 {
-  "name": "Dr. Ahmed",
+  "name": "Dr.Mohamed Ahmed",
   "email": "ahmed@example.com",
   "phoneNumber": "0123456789",
   "specialization": "Cardiology",
@@ -15,15 +17,18 @@ Content-Type: application/json
   "experienceYears": 10,
   "address": "Cairo, Egypt",
   "dateOfBirth": "1980-05-15",
-  "password": "123456"
+  "password": "123456",
+  "username": "M@Ahmed"
 }
 
 ### Get doctor by ID
 GET http://localhost:8080/api/doctors/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoQHlvdXNzZWYiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjo5LCJuYW1lIjoiWW91c3NlZiIsImlhdCI6MTc2NTMyNTU3NiwiZXhwIjoxNzY1NDExOTc2fQ.XNZKoOCL_IVtHhBsIrKGfR33pDRuM7B2bszdz0V2zXk
 Accept: application/json
 
 ### Update doctor
 PUT http://localhost:8080/api/doctors/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoQHlvdXNzZWYiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjo5LCJuYW1lIjoiWW91c3NlZiIsImlhdCI6MTc2NTMyNTU3NiwiZXhwIjoxNzY1NDExOTc2fQ.XNZKoOCL_IVtHhBsIrKGfR33pDRuM7B2bszdz0V2zXk
 Content-Type: application/json
 
 {
@@ -40,4 +45,9 @@ Content-Type: application/json
 
 ### Delete doctor
 DELETE http://localhost:8080/api/doctors/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoQHlvdXNzZWYiLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlkIjo5LCJuYW1lIjoiWW91c3NlZiIsImlhdCI6MTc2NTMyNTU3NiwiZXhwIjoxNzY1NDExOTc2fQ.XNZKoOCL_IVtHhBsIrKGfR33pDRuM7B2bszdz0V2zXk
+
+
+
+
 

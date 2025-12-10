@@ -37,4 +37,3 @@ Content-Type: application/json
 ### Delete patient
 DELETE http://localhost:8080/api/patients/1
 
-
