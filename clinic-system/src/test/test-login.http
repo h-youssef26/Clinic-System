@@ -1,0 +1,25 @@
+### signup new user
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+"username": "Heba",
+"email": "test@example.com",
+"password": "123456"
+}
+### login existing user
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+"email": "test@example.com",
+"password": "123456"
+}
+### verify user email
+POST http://localhost:8080/auth/verify
+Content-Type: application/json
+
+{
+"email": "test@example.com",
+"verificationCode": "733062"
+}
