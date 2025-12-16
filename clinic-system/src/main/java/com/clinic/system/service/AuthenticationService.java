@@ -10,11 +10,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
-
+import org.springframework.http.HttpStatus;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
@@ -39,8 +39,9 @@ public class AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
-        //sendVerificationEmail(user);
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        sendVerificationEmail(user);
+        return savedUser;
     }
 
     public User authenticate(LoginUserDto input) {
@@ -48,7 +49,11 @@ public class AuthenticationService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!user.isEnabled()) {
-            throw new RuntimeException("Account not verified. Please verify your account.");
+            user.setVerificationCode(generateVerificationCode());
+            user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
+            userRepository.save(user);
+            sendVerificationEmail(user);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Account not verified");
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
