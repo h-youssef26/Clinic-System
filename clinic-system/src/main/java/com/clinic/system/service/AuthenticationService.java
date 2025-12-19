@@ -15,12 +15,17 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    
+    @Value("${app.auto-verify-users:false}")
+    private boolean autoVerifyUsers;
 
     public AuthenticationService(
             UserRepository userRepository,
@@ -35,12 +40,19 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDto input) {
+        // Check if email already exists
+        if (userRepository.findByEmail(input.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
+        }
+        
         User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
-        user.setVerificationCode(generateVerificationCode());
-        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
-        user.setEnabled(false);
+        // Always enable users - no email verification needed
+        user.setEnabled(true);
+        user.setVerificationCode(null);
+        user.setVerificationCodeExpiresAt(null);
+        
         User savedUser = userRepository.save(user);
-        sendVerificationEmail(user);
+        
         return savedUser;
     }
 
@@ -48,13 +60,14 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Enable user if disabled (for existing users)
         if (!user.isEnabled()) {
-            user.setVerificationCode(generateVerificationCode());
-            user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
+            user.setEnabled(true);
+            user.setVerificationCode(null);
+            user.setVerificationCodeExpiresAt(null);
             userRepository.save(user);
-            sendVerificationEmail(user);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Account not verified");
         }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
