@@ -1,0 +1,35 @@
+### create appointment as patient mo@com
+POST http://localhost:8081/appointments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJzdWIiOiJtb0Bjb20iLCJpYXQiOjE3NjYyNjA0NDQsImV4cCI6MTc2NjI2NDA0NH0.r0HsESZPDAZH-b6d_Lv5UbC5djfFIm_XJ5dJPzqPzpI
+
+{
+  "doctorId": 2,
+  "appointmentDate": "2024-07-15T14:00:00Z",
+  "reason": "Follow-up visit"
+}
+
+### cancel appointment as patient mo@com before approve
+DELETE http://localhost:8081/appointments/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJzdWIiOiJtb0Bjb20iLCJpYXQiOjE3NjYyNjA0NDQsImV4cCI6MTc2NjI2NDA0NH0.r0HsESZPDAZH-b6d_Lv5UbC5djfFIm_XJ5dJPzqPzpI
+
+### get all appointments for doctor by id
+GET http://localhost:8081/appointments/doctor/my
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0RPQ1RPUiIsInN1YiI6IkNsaW50X01hcnF1YXJkdDg4QHlhaG9vLmNvbSIsImlhdCI6MTc2NjI2MTIzNSwiZXhwIjoxNzY2MjY0ODM1fQ.2K-Ns9e2Ubw4LHHBT2zkJSFEUN5yZ95IMkFznhfCsnM
+
+### get all appointments for patient mo@com
+GET http://localhost:8081/appointments/my
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJzdWIiOiJtb0Bjb20iLCJpYXQiOjE3NjYyNjI2ODksImV4cCI6MTc2NjI2NjI4OX0.mlgZw3XgkE6lsCHM8exPBXHdoVSk-Zr5PNYlKLUpZuI
+
+### get all appointments for admin
+GET http://localhost:8081/appointments/admin/all
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwic3ViIjoiaC55b3Vzc2VmMjMyM0BudS5lZHUuZWciLCJpYXQiOjE3NjYyNjI3NzIsImV4cCI6MTc2NjI2NjM3Mn0.o4iL0E4NXAHU5V1IpIBSw-Yrw3mjecDXYFsQU_J6H2k
+
+### approve appointment as admin
+PUT http://localhost:8081/appointments/admin/1/approve
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwic3ViIjoiaC55b3Vzc2VmMjMyM0BudS5lZHUuZWciLCJpYXQiOjE3NjYyNjA5NzUsImV4cCI6MTc2NjI2NDU3NX0.kwBg0XsmcnwiW41nCiVFourAPds5-f5JxGYlux3dX34

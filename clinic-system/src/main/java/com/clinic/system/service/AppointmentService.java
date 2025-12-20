@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import com.clinic.system.model.Doctor;
+import com.clinic.system.model.Appointment.AppointmentStatus;
 
 @Service
 public class AppointmentService {
@@ -53,5 +54,46 @@ public class AppointmentService {
     public List<Appointment> getAppointmentsByDoctor(Doctor doctor) {
         return appointmentRepository.findByDoctorId(doctor.getId());
     }
+
+    // Cancel appointment (only if APPROVED)
+    public Appointment cancelAppointment(Long id, User patient) {
+        Appointment appointment = getAppointmentById(id);
+
+        if (!appointment.getPatient().getId().equals(patient.getId())) {
+            throw new RuntimeException("You are not allowed to cancel this appointment.");
+        }
+
+        if (appointment.getStatus() != Appointment.AppointmentStatus.APPROVED) {
+            // Instead of cancelling, inform patient to wait
+            throw new RuntimeException("Your appointment is still pending. Please wait for admin approval.");
+        }
+
+        appointment.setStatus(Appointment.AppointmentStatus.CANCELLED);
+        return appointmentRepository.save(appointment);
+    }
+
+    // ------------------- Admin Methods -------------------
+
+    // Approve appointment
+    public Appointment approveAppointment(Long id) {
+        Appointment appointment = getAppointmentById(id);
+        appointment.setStatus(AppointmentStatus.APPROVED);
+        return appointmentRepository.save(appointment);
+    }
+
+    // Deny appointment
+    public Appointment denyAppointment(Long id) {
+        Appointment appointment = getAppointmentById(id);
+        appointment.setStatus(AppointmentStatus.DENIED);
+        return appointmentRepository.save(appointment);
+    }
+
+    // Get appointments by status
+    public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
+        return appointmentRepository.findByStatus(status);
+    }
+
+
+
 
 }

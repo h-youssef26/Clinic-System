@@ -70,6 +70,6 @@ POST http://localhost:8081/auth/login
 Content-Type: application/json
 
 {
-  "email": "Bennett_Kerluke41@hotmail.com",
-  "password": "QY18XHx75iQVahb"
+  "email": "Clint_Marquardt88@yahoo.com",
+  "password": "p_pPOo3e5Yvp7qZ"
 }

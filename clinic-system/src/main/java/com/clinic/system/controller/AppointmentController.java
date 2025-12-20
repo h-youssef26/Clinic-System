@@ -13,6 +13,9 @@ import com.clinic.system.model.Doctor;
 import com.clinic.system.service.DoctorService;
 import com.clinic.system.dto.AppointmentRequest;
 import com.clinic.system.service.AppointmentService;
+import com.clinic.system.model.Appointment.AppointmentStatus;
+import com.clinic.system.repository.AppointmentRepository;
+
 
 @RestController
 @RequestMapping("/appointments")
@@ -21,12 +24,14 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserService userService;
     private final DoctorService doctorService;
+    private final AppointmentRepository appointmentRepository;
 
 
-    public AppointmentController(AppointmentService appointmentService, UserService userService, DoctorService doctorService) {
+    public AppointmentController(AppointmentService appointmentService, UserService userService, DoctorService doctorService, AppointmentRepository appointmentRepository) {
         this.appointmentService = appointmentService;
         this.userService = userService;
         this.doctorService = doctorService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     // Patient can create appointment
@@ -34,22 +39,30 @@ public class AppointmentController {
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentRequest request, Principal principal) {
         User patient = userService.findByEmail(principal.getName());
-
-        // Get the doctor entity
         Doctor doctor = doctorService.getDoctorById(request.getDoctorId());
 
-        // Create the appointment
         Appointment appointment = new Appointment();
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
         appointment.setReason(request.getReason());
         appointment.setAppointmentTime(request.getAppointmentTime());
-        appointment.setStatus("Scheduled"); // default status
-
+        appointment.setStatus(AppointmentStatus.PENDING);
         Appointment saved = appointmentService.createAppointment(appointment);
         return ResponseEntity.ok(saved);
     }
 
+    // cancel appointment
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long id, Principal principal) {
+        try {
+            User patient = userService.findByEmail(principal.getName());
+            appointmentService.cancelAppointment(id, patient); // call service method
+            return ResponseEntity.ok("Appointment cancelled successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(403).body(e.getMessage()); // return message if pending
+        }
+    }
 
     // Patient can see their appointments
     @GetMapping("/my")
@@ -73,24 +86,18 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateAppointment(id, appointment));
     }
 
-    // Delete appointment (patient can only delete their own)
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id, Principal principal) {
-        User patient = userService.findByEmail(principal.getName());
-        Appointment existing = appointmentService.getAppointmentById(id);
-        if (!existing.getPatient().getId().equals(patient.getId())) {
-            return ResponseEntity.status(403).build();
-        }
-        appointmentService.deleteAppointment(id);
-        return ResponseEntity.ok().build();
-    }
 
     // Admin can see all appointments
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
+    }
+
+    @GetMapping("/admin/status/{status}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Appointment>> getAppointmentsByStatus(@PathVariable AppointmentStatus status) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByStatus(status));
     }
 
     @GetMapping("/doctor/my")
@@ -102,6 +109,18 @@ public class AppointmentController {
         // Fetch all appointments for this doctor
         List<Appointment> appointments = appointmentService.getAppointmentsByDoctor(doctor);
         return ResponseEntity.ok(appointments);
+    }
+
+    @PutMapping("/admin/{id}/approve")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Appointment> approveAppointment(@PathVariable Long id) {
+        return ResponseEntity.ok(appointmentService.approveAppointment(id));
+    }
+
+    @PutMapping("/admin/{id}/deny")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Appointment> denyAppointment(@PathVariable Long id) {
+        return ResponseEntity.ok(appointmentService.denyAppointment(id));
     }
 
 }
