@@ -38,8 +38,8 @@ POST http://localhost:8081/auth/login
 Content-Type: application/json
 
 {
-    "email": "Bernita.Larson@hotmail.com",
-    "password": "Fk3EinR341R97Kt"
+    "email": "faten@gamail.com",
+    "password": "123456"
 }
 
 ### crete new doctor (ADMIN role required)
@@ -64,4 +64,12 @@ Content-Type: application/json
 {
     "email": "mo@com",
     "password":"123456"
+}
+###loggin
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "email": "Bennett_Kerluke41@hotmail.com",
+  "password": "QY18XHx75iQVahb"
 }

@@ -146,5 +146,10 @@ public class DoctorService {
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
     }
 
+    public Doctor findByEmail(String email) {
+        return doctorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    }
+
 
 }

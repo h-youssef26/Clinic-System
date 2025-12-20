@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import java.util.List;
-
+import com.clinic.system.dto.DoctorNameDto;
+import com.clinic.system.model.Doctor;
 @RestController
 @RequestMapping("/doctors")
 public class DoctorController {
@@ -66,4 +67,18 @@ public class DoctorController {
     public void deleteDoctor(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
     }
+
+    @GetMapping("/list")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<List<DoctorNameDto>> getDoctorsList() {
+        List<Doctor> doctors = doctorService.getAllDoctors();
+
+        // Map to DTO with only ID and name
+        List<DoctorNameDto> doctorNames = doctors.stream()
+                .map(d -> new DoctorNameDto( d.getName(),d.getId()))
+                .toList();
+
+        return ResponseEntity.ok(doctorNames);
+    }
+
 }
