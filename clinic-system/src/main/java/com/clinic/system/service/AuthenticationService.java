@@ -15,12 +15,17 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+
+    @Value("${app.auto-verify-users:false}")
+    private boolean autoVerifyUsers;
 
     public AuthenticationService(
             UserRepository userRepository,
@@ -34,36 +39,54 @@ public class AuthenticationService {
         this.emailService = emailService;
     }
 
-    public User signup(RegisterUserDto input) {
-        User user = new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()));
-        user.setVerificationCode(generateVerificationCode());
-        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
-        user.setEnabled(false);
-        User savedUser = userRepository.save(user);
-        sendVerificationEmail(user);
-        return savedUser;
+    public User signup(RegisterUserDto registerUserDto) {
+        if ("DOCTOR".equalsIgnoreCase(registerUserDto.getRole())) {
+            throw new RuntimeException("Doctors cannot sign up directly");
+        }
+
+        if (userRepository.existsByEmail(registerUserDto.getEmail())) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        // encode password
+        String encodedPassword = passwordEncoder.encode(registerUserDto.getPassword());
+
+        User user = new User(
+                registerUserDto.getUsername(),
+                registerUserDto.getEmail(),
+                encodedPassword,
+                User.Role.PATIENT
+        );
+
+        // generate verification code logic (optional)
+        //user.setVerificationCode(generateVerificationCode());
+        //user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(10));
+        user.setEnabled(true); // require verification
+
+        return userRepository.save(user);
     }
 
-    public User authenticate(LoginUserDto input) {
-        User user = userRepository.findByEmail(input.getEmail())
+
+    public User authenticate(LoginUserDto loginUserDto) {
+        User user = userRepository.findByEmail(loginUserDto.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("Raw: " + loginUserDto.getPassword());
+        System.out.println("Encoded: " + user.getPassword());
+        System.out.println("Matches? " + passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword()));
+        System.out.println("Enabled? " + user.isEnabled());
 
         if (!user.isEnabled()) {
-            user.setVerificationCode(generateVerificationCode());
-            user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
-            userRepository.save(user);
-            sendVerificationEmail(user);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Account not verified");
+            throw new RuntimeException("Account not verified");
         }
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
-                        input.getPassword()
-                )
-        );
+
+        if (!passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
         return user;
     }
+
+
 
     public void verifyUser(VerifyUserDto input) {
         Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());

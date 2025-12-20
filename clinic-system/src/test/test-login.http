@@ -1,20 +1,21 @@
 ### signup new user
-POST http://localhost:8080/auth/signup
+POST http://localhost:8081/auth/signup
 Content-Type: application/json
 
 {
-  "username": "faten",
-  "email": "faten.ramadan.mohamed@gmail.com",
+  "username": "faten ramadan",
+  "email": "faten@gamail.com",
   "password": "123456"
 }
 ### login existing user
-POST http://localhost:8080/auth/login
+POST http://localhost:8081/auth/Login
 Content-Type: application/json
 
 {
-"email": "faten.ramadan.mohamed@gmail.com",
-"password": "123456"
+  "email": "Bernita.Larson@hotmail.com",
+  "password": "Fk3EinR341R97Kt"
 }
+
 ### verify user email
 POST http://localhost:8080/auth/verify
 Content-Type: application/json
@@ -24,12 +25,43 @@ Content-Type: application/json
 "verificationCode": "484875"
 }
 
-###signup another user
-POST http://localhost:8080/auth/signup
+### login another user
+POST http://localhost:8081/auth/login
 Content-Type: application/json
 
 {
-  "username": "hajar",
-  "email": "hajarmuhammad903@gmail.com",
+  "email": "h.youssef2323@nu.edu.eg",
   "password": "123456"
+}
+### LOGIN USER
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+    "email": "Bernita.Larson@hotmail.com",
+    "password": "Fk3EinR341R97Kt"
+}
+
+### crete new doctor (ADMIN role required)
+POST http://localhost:8081/doctors
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwic3ViIjoiaC55b3Vzc2VmMjMyM0BudS5lZHUuZWciLCJpYXQiOjE3NjYyMzc1NzIsImV4cCI6MTc2NjI0MTE3Mn0.WAztx69caqBThs6Iu9Awn3APEnFDiieXUZgclKTUj3M
+Content-Type: application/json
+
+{
+  "name": "Dr.Ali",
+  "email": "ali@clinic.com",
+  "specialty": "Cardiology",
+  "password": "123456"
+}
+###DELETE doctor (ADMIN role required)
+DELETE http://localhost:8081/doctors/52
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwic3ViIjoiaC55b3Vzc2VmMjMyM0BudS5lZHUuZWciLCJpYXQiOjE3NjYyMzg1NjAsImV4cCI6MTc2NjI0MjE2MH0.8RCbtuF3S3IouGITRITch4Z71z0My5IOjh4qBvcq8BI
+
+###login user to get token
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+    "email": "mo@com",
+    "password":"123456"
 }
