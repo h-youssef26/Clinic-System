@@ -87,7 +87,7 @@ public class AppointmentController {
     }
 
     // Admin can see all appointments
-    @GetMapping
+    @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());

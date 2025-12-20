@@ -34,8 +34,11 @@ public class SecurityConfiguration {
         http
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/auth/**", "/error").permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/appointments/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/appointments/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/appointments/**").hasRole("PATIENT")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
