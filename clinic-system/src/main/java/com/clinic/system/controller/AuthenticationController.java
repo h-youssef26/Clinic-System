@@ -11,7 +11,6 @@ import com.clinic.system.service.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
@@ -30,15 +29,18 @@ public class AuthenticationController {
             // Create the user
             User registeredUser = authenticationService.signup(registerUserDto);
 
+            // Get the actual username field (not email)
+            String actualUsername = registeredUser.getActualUsername();
             // Build a response similar to LoginResponse, but without token
             LoginResponse response = new LoginResponse(
                     null,                      // no token
                     0,                         // no expiration
                     registeredUser.getEmail(),
-                    registeredUser.getUsername(),
+                    actualUsername != null ? actualUsername : registeredUser.getEmail(), // Use actual username field
                     registeredUser.getRole() == User.Role.DOCTOR
                             ? registeredUser.getDoctor().getName()
-                            : registeredUser.getUsername()
+                            : (actualUsername != null && !actualUsername.isEmpty() ? actualUsername : registeredUser.getEmail()),
+                    registeredUser.getRole().name() // Add role
             );
 
             return ResponseEntity.ok(response);
@@ -55,18 +57,24 @@ public class AuthenticationController {
             // Authenticate user (throws RuntimeException if email not found or password wrong)
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
-            // Generate JWT token
-            String jwtToken = jwtService.generateToken(authenticatedUser);
+            // Get the actual username field (not email)
+            String actualUsername = authenticatedUser.getActualUsername();
+            // Get the name for the token and response
+            String userName = authenticatedUser.getRole() == User.Role.DOCTOR
+                    ? authenticatedUser.getDoctor().getName()
+                    : (actualUsername != null && !actualUsername.isEmpty() ? actualUsername : authenticatedUser.getEmail());  // Use actual username, fallback to email if null
 
-            // Build LoginResponse
+            // Generate JWT token with name included
+            String jwtToken = jwtService.generateToken(authenticatedUser, userName);
+
+            // Build LoginResponse - use actual username field, not getUsername() which returns email
             LoginResponse loginResponse = new LoginResponse(
                     jwtToken,
                     jwtService.getExpirationTime(), // or 3600000
                     authenticatedUser.getEmail(),
-                    authenticatedUser.getUsername(),
-                    authenticatedUser.getRole() == User.Role.DOCTOR
-                            ? authenticatedUser.getDoctor().getName()
-                            : authenticatedUser.getUsername()  // fallback for non-doctor
+                    actualUsername != null ? actualUsername : authenticatedUser.getEmail(), // Use actual username field
+                    userName,  // Use the same name
+                    authenticatedUser.getRole().name() // Add role
             );
 
             return ResponseEntity.ok(loginResponse);

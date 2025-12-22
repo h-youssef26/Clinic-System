@@ -48,6 +48,28 @@ public class JwtService {
         return generateToken(claims, userDetails);
     }
 
+    // Overloaded method to include name in token
+    public String generateToken(UserDetails userDetails, String name) {
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put(
+                "role",
+                "ROLE_"+
+                userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .orElseThrow()
+                        .getAuthority()
+        );
+        
+        // Add name to token claims
+        if (name != null && !name.isEmpty()) {
+            claims.put("name", name);
+        }
+
+        return generateToken(claims, userDetails);
+    }
+
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }

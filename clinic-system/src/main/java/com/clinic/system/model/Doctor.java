@@ -20,10 +20,12 @@ public class Doctor {
     private String email;
 
     private String specialty;
+    private Double consultationFee; // Consultation fee for this doctor
     private LocalDateTime createdAt;
     private String password;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"doctor", "password", "verificationCode", "verificationCodeExpiresAt", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
     private User user;
 }

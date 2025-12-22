@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import java.util.List;
 import com.clinic.system.dto.DoctorNameDto;
-import com.clinic.system.model.Doctor;
 @RestController
 @RequestMapping("/doctors")
 public class DoctorController {
@@ -71,14 +70,31 @@ public class DoctorController {
     @GetMapping("/list")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<List<DoctorNameDto>> getDoctorsList() {
-        List<Doctor> doctors = doctorService.getAllDoctors();
+        try {
+            List<Doctor> doctors = doctorService.getAllDoctors();
+            
+            // Ensure we always return a list, even if empty
+            if (doctors == null) {
+                doctors = new java.util.ArrayList<>();
+            }
 
-        // Map to DTO with only ID and name
-        List<DoctorNameDto> doctorNames = doctors.stream()
-                .map(d -> new DoctorNameDto( d.getName(),d.getId()))
-                .toList();
+            // Map to DTO with ID, name, and consultation fee
+            List<DoctorNameDto> doctorNames = doctors.stream()
+                    .map(d -> {
+                        DoctorNameDto dto = new DoctorNameDto();
+                        dto.setName(d.getName() != null ? d.getName() : "Unknown");
+                        dto.setId(d.getId());
+                        dto.setConsultationFee(d.getConsultationFee() != null ? d.getConsultationFee() : 100.0);
+                        return dto;
+                    })
+                    .toList();
 
-        return ResponseEntity.ok(doctorNames);
+            return ResponseEntity.ok(doctorNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Return empty list on error instead of null
+            return ResponseEntity.ok(new java.util.ArrayList<>());
+        }
     }
 
 }

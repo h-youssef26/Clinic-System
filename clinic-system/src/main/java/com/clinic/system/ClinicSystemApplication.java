@@ -21,7 +21,13 @@ public class ClinicSystemApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Now this works because doctorService is an instance, not static
-        doctorService.fetchAndSaveDoctors();
+        // Fetch and save doctors from API on startup
+        // This will skip duplicates if doctors already exist
+        try {
+            doctorService.fetchAndSaveDoctors();
+        } catch (Exception e) {
+            // Log error but don't fail startup if API is unavailable
+            System.err.println("Warning: Could not fetch doctors on startup: " + e.getMessage());
+        }
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -45,6 +46,7 @@ public class User implements UserDetails {
 
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"user"})
     private Doctor doctor;
 
 
@@ -86,8 +88,16 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore // Ignore this method for JSON serialization (it returns email, not username)
     public String getUsername() {
         return email;
+    }
+
+    // Get the actual username field (not the email)
+    // This will be used by Jackson for JSON serialization as "username"
+    @com.fasterxml.jackson.annotation.JsonGetter("username")
+    public String getActualUsername() {
+        return username;
     }
 
     public void setRole(Role role) {

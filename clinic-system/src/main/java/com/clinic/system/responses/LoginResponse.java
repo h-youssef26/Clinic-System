@@ -11,6 +11,7 @@ public class LoginResponse {
     private String email;
     private String username;
     private String name;
+    private String role; // Add role field
 
     // Existing constructor
     public LoginResponse(String token, long expiresIn) {
@@ -19,11 +20,12 @@ public class LoginResponse {
     }
 
     // Full constructor for login response
-    public LoginResponse(String token, long expiresIn, String email, String username, String name){
+    public LoginResponse(String token, long expiresIn, String email, String username, String name, String role){
         this.token = token;
         this.expiresIn = expiresIn;
         this.email = email;
         this.username = username;
         this.name = name;
+        this.role = role;
     }
 }

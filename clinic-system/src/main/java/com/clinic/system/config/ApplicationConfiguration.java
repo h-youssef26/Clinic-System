@@ -21,8 +21,13 @@ public class ApplicationConfiguration {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> {
+            // username is actually the email (from User.getUsername() which returns email)
+            // Normalize to lowercase for consistent lookup
+            String email = username != null ? username.trim().toLowerCase() : "";
+            return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        };
     }
 
     @Bean
