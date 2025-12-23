@@ -17,6 +17,7 @@ import com.clinic.system.model.Appointment.AppointmentStatus;
 import com.clinic.system.repository.AppointmentRepository;
 
 
+
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {

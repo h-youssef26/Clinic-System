@@ -37,7 +37,8 @@ public class Appointment {
         APPROVED,
         DENIED,
         CANCELLED,
-        COMPLETED
+        COMPLETED,
+        SCHEDULED
     }
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
@@ -49,4 +50,6 @@ public class Appointment {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+    private Double amount; // Add this to store payment amount
+    private String paymentStatus;
 }

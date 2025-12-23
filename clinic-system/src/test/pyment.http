@@ -1,0 +1,53 @@
+### get all payments for admin
+GET http://localhost:8081/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+### get all pending payments for admin
+GET http://localhost:8081/payments/pending
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+### get all payments by method CASH for admin
+GET http://localhost:8081/payments/method/CASH
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+
+### Get patient's pending VISA payments
+GET http://localhost:8081/payments/my-pending
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoiZmF0ZW4gcmFtYWRhbiIsInN1YiI6ImZhdGVuQGdhbWFpbC5jb20iLCJpYXQiOjE3NjY1MjMxNTUsImV4cCI6MTc2NjUyNjc1NX0.C0nLfBmgUDNWrieAsvdz4EiqoJ08pSlkN5xmmgYQPGQ
+
+### Create a payment for an appointment as patient
+POST http://localhost:8081/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoiZmF0ZW4gcmFtYWRhbiIsInN1YiI6ImZhdGVuQGdhbWFpbC5jb20iLCJpYXQiOjE3NjY1MjMxNTUsImV4cCI6MTc2NjUyNjc1NX0.C0nLfBmgUDNWrieAsvdz4EiqoJ08pSlkN5xmmgYQPGQ
+
+{
+"appointmentId": 1,
+"paymentMethod": "VISA",
+"cardLast4": "1234"
+}
+
+### Approve a payment as admin
+PUT http://localhost:8081/payments/1/approve
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+### Reject a payment as admin
+PUT http://localhost:8081/payments/1/reject
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+### Get payment details by id as admin
+GET http://localhost:8081/payments/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+###delete pyment by id as admin
+DELETE http://localhost:8081/payments/1
+DELETE http://localhost:8080/payments/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
+

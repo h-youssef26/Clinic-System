@@ -27,7 +27,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiL
 ### get all appointments for admin
 GET http://localhost:8081/appointments/admin/all
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwic3ViIjoiaC55b3Vzc2VmMjMyM0BudS5lZHUuZWciLCJpYXQiOjE3NjYyNjI3NzIsImV4cCI6MTc2NjI2NjM3Mn0.o4iL0E4NXAHU5V1IpIBSw-Yrw3mjecDXYFsQU_J6H2k
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUxOTgxNiwiZXhwIjoxNzY2NTIzNDE2fQ.fBIcb1gBsreVzMEXyaFVCBKFiTOTsWYEok_0HmdzgIc
 
 ### approve appointment as admin
 PUT http://localhost:8081/appointments/admin/1/approve
