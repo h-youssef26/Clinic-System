@@ -46,8 +46,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwib
 
 ###delete pyment by id as admin
 DELETE http://localhost:8081/payments/1
-DELETE http://localhost:8080/payments/1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
 
+### Get payment details by id as doctor
+GET http://localhost:8081/payments/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0RPQ1RPUiIsIm5hbWUiOiJNYWxjb2xtIEJyb3duIiwic3ViIjoiQ2xpbnRfTWFycXVhcmR0ODhAeWFob28uY29tIiwiaWF0IjoxNzY2NTI1MzUyLCJleHAiOjE3NjY1Mjg5NTJ9.RhmJEizSAVSP_olhPx62gNSDH_oTgd8UpS1kzQQ8tYo
 
+### Get patient's payments as patient
+GET http://localhost:8081/payments/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoibW9oYW1lZCIsInN1YiI6Im1vQGNvbSIsImlhdCI6MTc2NjUyNTQ3OCwiZXhwIjoxNzY2NTI5MDc4fQ.2rsR1uBK1R2bfer8q0nwBEc_-6WjFq2q1Zj4MsV9SWI

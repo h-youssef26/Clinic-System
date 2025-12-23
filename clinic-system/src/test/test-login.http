@@ -38,8 +38,8 @@ POST http://localhost:8081/auth/login
 Content-Type: application/json
 
 {
-    "email": "faten@gamail.com",
-    "password": "123456"
+    "email": "Clint_Marquardt88@yahoo.com",
+    "password": "p_pPOo3e5Yvp7qZ"
 }
 
 ### crete new doctor (ADMIN role required)

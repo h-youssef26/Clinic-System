@@ -1,0 +1,40 @@
+### Create a new prescription for a patient as doctor
+POST http://localhost:8081/prescriptions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0RPQ1RPUiIsIm5hbWUiOiJNYWxjb2xtIEJyb3duIiwic3ViIjoiQ2xpbnRfTWFycXVhcmR0ODhAeWFob28uY29tIiwiaWF0IjoxNzY2NTI2NDMxLCJleHAiOjE3NjY1MzAwMzF9.moaJ3sCSP34X9-65ovuj9cnlM-Ar5OrN0nxgwgcyX0c
+
+{
+  "patient": { "id": 56 },
+  "medications": "Paracetamol 500mg",
+  "notes": "Take twice daily"
+}
+
+### get all prescriptions for patient as patient
+GET http://localhost:8081/prescriptions/my-prescriptions
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoibW9oYW1lZCIsInN1YiI6Im1vQGNvbSIsImlhdCI6MTc2NjUyNjU4MiwiZXhwIjoxNzY2NTMwMTgyfQ.xnJeLCHadQCdSDwxg-PSU0NB_rqj3YYIOj9UgFpeW24
+
+### get prescriptions for doctor as doctor
+GET http://localhost:8081/prescriptions/doctor/my-prescriptions
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0RPQ1RPUiIsIm5hbWUiOiJNYWxjb2xtIEJyb3duIiwic3ViIjoiQ2xpbnRfTWFycXVhcmR0ODhAeWFob28uY29tIiwiaWF0IjoxNzY2NTI2NDMxLCJleHAiOjE3NjY1MzAwMzF9.moaJ3sCSP34X9-65ovuj9cnlM-Ar5OrN0nxgwgcyX0c
+
+### get prescription by id as patient
+GET http://localhost:8081/prescriptions/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoibW9oYW1lZCIsInN1YiI6Im1vQGNvbSIsImlhdCI6MTc2NjUyNjU4MiwiZXhwIjoxNzY2NTMwMTgyfQ.xnJeLCHadQCdSDwxg-PSU0NB_rqj3YYIOj9UgFpeW24
+
+### get prescription by id as doctor
+GET http://localhost:8081/prescriptions/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0RPQ1RPUiIsIm5hbWUiOiJNYWxjb2xtIEJyb3duIiwic3ViIjoiQ2xpbnRfTWFycXVhcmR0ODhAeWFob28uY29tIiwiaWF0IjoxNzY2NTI2NDMxLCJleHAiOjE3NjY1MzAwMzF9.moaJ3sCSP34X9-65ovuj9cnlM-Ar5OrN0nxgwgcyX0c
+
+### DELETE prescription by id as doctor or patient
+DELETE http://localhost:8081/prescriptions/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoibW9oYW1lZCIsInN1YiI6Im1vQGNvbSIsImlhdCI6MTc2NjUyNjU4MiwiZXhwIjoxNzY2NTMwMTgyfQ.xnJeLCHadQCdSDwxg-PSU0NB_rqj3YYIOj9UgFpeW24
+
+### UPDATE prescription by id as doctor
+PUT http://localhost:8081/prescriptions/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX1BBVElFTlQiLCJuYW1lIjoibW9oYW1lZCIsInN1YiI6Im1vQGNvbSIsImlhdCI6MTc2NjUyNjU4MiwiZXhwIjoxNzY2NTMwMTgyfQ.xnJeLCHadQCdSDwxg-PSU0NB_rqj3YYIOj9UgFpeW24
+Content-Type: application/json
+
+{
+  "medications": "Ibuprofen 200mg",
+  "notes": "Take after meals"
+}
