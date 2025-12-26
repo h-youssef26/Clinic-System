@@ -8,7 +8,8 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import com.clinic.system.model.Doctor;
 import com.clinic.system.model.Appointment.AppointmentStatus;
-
+import java.time.LocalDateTime;
+import java.util.Optional;
 @Service
 public class AppointmentService {
 
@@ -19,6 +20,7 @@ public class AppointmentService {
     }
 
     public Appointment createAppointment(Appointment appointment) {
+
         return appointmentRepository.save(appointment);
     }
 
@@ -78,6 +80,17 @@ public class AppointmentService {
     public Appointment approveAppointment(Long id) {
         Appointment appointment = getAppointmentById(id);
         appointment.setStatus(AppointmentStatus.APPROVED);
+
+        // Ensure it has some date/time so frontend can display it
+        // Set appointmentTime if null
+        if (appointment.getAppointmentTime() == null) {
+            appointment.setAppointmentTime(LocalDateTime.now());
+        }
+
+        // Set dateTime if null (optional, depending on frontend needs)
+        if (appointment.getDateTime() == null) {
+            appointment.setDateTime(appointment.getAppointmentTime());
+        }
         return appointmentRepository.save(appointment);
     }
 
@@ -85,6 +98,15 @@ public class AppointmentService {
     public Appointment denyAppointment(Long id) {
         Appointment appointment = getAppointmentById(id);
         appointment.setStatus(AppointmentStatus.DENIED);
+        // Set appointmentTime if null
+        if (appointment.getAppointmentTime() == null) {
+            appointment.setAppointmentTime(LocalDateTime.now());
+        }
+
+        // Set dateTime if null (optional, depending on frontend needs)
+        if (appointment.getDateTime() == null) {
+            appointment.setDateTime(appointment.getAppointmentTime());
+        }
         return appointmentRepository.save(appointment);
     }
 

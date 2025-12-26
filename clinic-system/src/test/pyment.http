@@ -2,6 +2,7 @@
 GET http://localhost:8081/payments
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9ST0xFX0FETUlOIiwibmFtZSI6ImhfeW91c3NlZjIzMjMiLCJzdWIiOiJoLnlvdXNzZWYyMzIzQG51LmVkdS5lZyIsImlhdCI6MTc2NjUyMjkzMCwiZXhwIjoxNzY2NTI2NTMwfQ.KsX0qGeJdy7HOfmYE65xjPvaUbaQ34BemSqbuF1c3ys
+
 ### get all pending payments for admin
 GET http://localhost:8081/payments/pending
 Content-Type: application/json

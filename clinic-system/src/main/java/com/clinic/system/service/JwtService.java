@@ -37,16 +37,17 @@ public class JwtService {
 
         claims.put(
                 "role",
-                "ROLE_"+
                 userDetails.getAuthorities()
                         .stream()
                         .findFirst()
                         .orElseThrow()
                         .getAuthority()
+                        .replace("ROLE_", "")
         );
 
         return generateToken(claims, userDetails);
     }
+
 
     // Overloaded method to include name in token
     public String generateToken(UserDetails userDetails, String name) {
