@@ -47,21 +47,35 @@ public class AppointmentController {
         appointment.setDoctor(doctor);
         appointment.setReason(request.getReason());
         appointment.setAppointmentTime(request.getAppointmentTime());
+        appointment.setAmount(request.getAmount());
         appointment.setStatus(AppointmentStatus.PENDING);
         Appointment saved = appointmentService.createAppointment(appointment);
         return ResponseEntity.ok(saved);
     }
 
-    // cancel appointment
+    // cancel appointment (soft delete - change status to CANCELLED)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<String> cancelAppointment(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<Void> cancelAppointment(@PathVariable Long id, Principal principal) {
         try {
             User patient = userService.findByEmail(principal.getName());
-            appointmentService.cancelAppointment(id, patient); // call service method
-            return ResponseEntity.ok("Appointment cancelled successfully.");
+            Appointment appointment = appointmentService.getAppointmentById(id);
+            
+            // Verify patient owns the appointment
+            if (!appointment.getPatient().getId().equals(patient.getId())) {
+                throw new RuntimeException("You are not allowed to cancel this appointment.");
+            }
+            
+            // Only allow cancellation if appointment has been approved by admin
+            if (appointment.getStatus() != Appointment.AppointmentStatus.APPROVED) {
+                throw new RuntimeException("You can only cancel appointments that have been accepted by the admin. Current status: " + appointment.getStatus());
+            }
+            
+            // Cancel the appointment (soft delete - changes status to CANCELLED)
+            appointmentService.cancelAppointment(id, patient);
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.status(403).body(e.getMessage()); // return message if pending
+            throw e; // Let global exception handler deal with it
         }
     }
 

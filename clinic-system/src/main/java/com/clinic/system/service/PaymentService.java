@@ -122,6 +122,26 @@ public class PaymentService {
 
         paymentRepository.delete(payment);
     }
+
+    // Get payments by doctor ID
+    public List<Payment> getPaymentsByDoctorId(Long doctorId) {
+        List<Payment> allPayments = paymentRepository.findAll();
+        return allPayments.stream()
+                .filter(payment -> payment.getAppointment() != null
+                        && payment.getAppointment().getDoctor() != null
+                        && payment.getAppointment().getDoctor().getId().equals(doctorId))
+                .toList();
+    }
+
+    // Get payments by patient ID
+    public List<Payment> getPaymentsByPatientId(Long patientId) {
+        List<Payment> allPayments = paymentRepository.findAll();
+        return allPayments.stream()
+                .filter(payment -> payment.getAppointment() != null
+                        && payment.getAppointment().getPatient() != null
+                        && payment.getAppointment().getPatient().getId().equals(patientId))
+                .toList();
+    }
 }
 
 

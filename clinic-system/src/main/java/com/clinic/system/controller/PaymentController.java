@@ -2,8 +2,10 @@ package com.clinic.system.controller;
 
 import com.clinic.system.model.Payment;
 import com.clinic.system.model.User;
+import com.clinic.system.model.Doctor;
 import com.clinic.system.repository.UserRepository;
 import com.clinic.system.service.PaymentService;
+import com.clinic.system.service.DoctorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,10 +20,12 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final UserRepository userRepository;
+    private final DoctorService doctorService;
 
-    public PaymentController(PaymentService paymentService, UserRepository userRepository) {
+    public PaymentController(PaymentService paymentService, UserRepository userRepository, DoctorService doctorService) {
         this.paymentService = paymentService;
         this.userRepository = userRepository;
+        this.doctorService = doctorService;
     }
 
     // Get all payments (ADMIN only)
@@ -58,7 +62,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getPaymentsByMethod(method));
     }
 
-    // Get patient's pending payments (PATIENT only) - for Visa payments
+    // Get patient's pending payments (PATIENT only)
     @GetMapping("/my-pending")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<List<Payment>> getMyPendingPayments() {
@@ -72,11 +76,70 @@ public class PaymentController {
             List<Payment> allPayments = paymentService.getAllPayments();
             List<Payment> patientPayments = allPayments.stream()
                     .filter(payment -> payment.getAppointment().getPatient().getId().equals(currentUser.getId()))
-                    .filter(payment -> payment.getStatus().equals("pending"))
-                    .filter(payment -> payment.getPaymentMethod().equals("VISA")) // Only Visa payments for patients
                     .toList();
 
             return ResponseEntity.ok(patientPayments);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    // Get all patient's payments (PATIENT only)
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('ROLE_PATIENT')")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<List<Payment>> getMyPayments() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            User currentUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            List<Payment> payments = paymentService.getPaymentsByPatientId(currentUser.getId());
+            // Force initialization of lazy-loaded relationships
+            payments.forEach(payment -> {
+                if (payment.getAppointment() != null) {
+                    if (payment.getAppointment().getPatient() != null) {
+                        payment.getAppointment().getPatient().getActualUsername(); // Force load
+                    }
+                    if (payment.getAppointment().getDoctor() != null) {
+                        payment.getAppointment().getDoctor().getName(); // Force load
+                    }
+                }
+            });
+            return ResponseEntity.ok(payments);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    // Get doctor's payments (DOCTOR only)
+    @GetMapping("/doctor/my")
+    @PreAuthorize("hasRole('DOCTOR')")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<List<Payment>> getDoctorPayments() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Doctor doctor = doctorService.findByEmail(email);
+            
+            if (doctor == null) {
+                return ResponseEntity.status(404).build();
+            }
+
+            List<Payment> payments = paymentService.getPaymentsByDoctorId(doctor.getId());
+            // Force initialization of lazy-loaded relationships
+            payments.forEach(payment -> {
+                if (payment.getAppointment() != null) {
+                    if (payment.getAppointment().getPatient() != null) {
+                        payment.getAppointment().getPatient().getActualUsername(); // Force load
+                    }
+                    if (payment.getAppointment().getDoctor() != null) {
+                        payment.getAppointment().getDoctor().getName(); // Force load
+                    }
+                }
+            });
+            return ResponseEntity.ok(payments);
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).build();
         }

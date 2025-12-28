@@ -22,12 +22,12 @@ public class Appointment {
     private LocalDateTime appointmentTime;
     private LocalDateTime dateTime; // <-- this is required
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id")
     @JsonIgnoreProperties({"user"}) // ignore nested user to avoid skipping status
     private User patient; // The patient creating the appointment
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "doctor_id")
     @JsonIgnoreProperties({"user"}) // ignore nested user to avoid skipping status
     private Doctor doctor; // Doctor for this appointment

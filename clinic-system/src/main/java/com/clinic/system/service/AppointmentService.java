@@ -10,13 +10,17 @@ import com.clinic.system.model.Doctor;
 import com.clinic.system.model.Appointment.AppointmentStatus;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import com.clinic.system.repository.PaymentRepository;
+import com.clinic.system.model.Payment;
+
 @Service
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-
-    public AppointmentService(AppointmentRepository appointmentRepository) {
+    private final PaymentRepository paymentRepository;
+    public AppointmentService(AppointmentRepository appointmentRepository, PaymentRepository paymentRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public Appointment createAppointment(Appointment appointment) {
@@ -66,8 +70,8 @@ public class AppointmentService {
         }
 
         if (appointment.getStatus() != Appointment.AppointmentStatus.APPROVED) {
-            // Instead of cancelling, inform patient to wait
-            throw new RuntimeException("Your appointment is still pending. Please wait for admin approval.");
+            // Only allow cancellation if appointment has been approved by admin
+            throw new RuntimeException("You can only cancel appointments that have been accepted by the admin. Current status: " + appointment.getStatus());
         }
 
         appointment.setStatus(Appointment.AppointmentStatus.CANCELLED);
@@ -77,21 +81,37 @@ public class AppointmentService {
     // ------------------- Admin Methods -------------------
 
     // Approve appointment
+    @Transactional
     public Appointment approveAppointment(Long id) {
         Appointment appointment = getAppointmentById(id);
+
+        // 1. Approve appointment
         appointment.setStatus(AppointmentStatus.APPROVED);
 
-        // Ensure it has some date/time so frontend can display it
-        // Set appointmentTime if null
         if (appointment.getAppointmentTime() == null) {
             appointment.setAppointmentTime(LocalDateTime.now());
         }
 
-        // Set dateTime if null (optional, depending on frontend needs)
-        if (appointment.getDateTime() == null) {
-            appointment.setDateTime(appointment.getAppointmentTime());
+        // 2. Create payment ONLY ONCE after approval
+        if (appointment.getPaymentStatus() == null) {
+
+            boolean paymentExists =
+                    paymentRepository.findByAppointmentId(appointment.getId()).isPresent();
+
+            if (!paymentExists) {
+                Payment payment = new Payment();
+                payment.setAppointment(appointment);
+                payment.setAmount(appointment.getAmount());
+                payment.setPaymentMethod("CASH"); // default
+                payment.setStatus("pending");
+
+                paymentRepository.save(payment);
+            }
+
+            appointment.setPaymentStatus("pending");
         }
-        return appointmentRepository.save(appointment);
+
+        return appointmentRepository.saveAndFlush(appointment);
     }
 
     // Deny appointment
