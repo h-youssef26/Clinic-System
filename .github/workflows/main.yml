@@ -1,0 +1,49 @@
+name: Java CI with MySQL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: MySQL80
+          MYSQL_DATABASE: clinic_system
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL..."
+          for i in {1..30}; do
+            if mysql -h 127.0.0.1 -u root -pMySQL80 -e "SHOW DATABASES;" >/dev/null 2>&1; then
+              echo "MySQL is ready"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Build with Maven
+        run: mvn clean install
+        working-directory: clinic-system
