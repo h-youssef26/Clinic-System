@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout your code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Java 17
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Step 3: Cache Maven dependencies (optional, speeds up builds)
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Step 4: Build & test using Maven
+    - name: Build with Maven
+      run: mvn clean install
+
+    # Step 5: Optional - Package the app (Spring Boot jar)
+    - name: Package Spring Boot app
+      run: mvn package
+
+    # Step 6: Optional - Deploy (example: to GitHub Packages, Docker, or server)
+    # You can configure your deployment here
